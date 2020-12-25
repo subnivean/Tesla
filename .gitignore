@@ -1,0 +1,4 @@
+.*.un~
+*.bak
+secrets*
+!secrets_example
