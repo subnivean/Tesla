@@ -1,5 +1,5 @@
-`get_tesla_gateway_meter_data.sh` requires the command-line JSON parser `jq` to be installed:
-
+This app needs the following software installed:
 ```
 sudo apt install jq
+sudo apt install arp-scan
 ```
