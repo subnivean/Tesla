@@ -1,14 +1,18 @@
 #!/bin/bash
 
-MAC="$(grep MAC secrets |cut -d'=' -f2)"
+# Use `MAC` when static IP cannot be set 
+# MAC="$(grep 'MAC='' secrets |cut -d'=' -f2)"
+# Use `IP` when static IP set through DHCP
+IP="$(grep 'IP=' secrets |cut -d'=' -f2)"
 
 OUTFILE="output/tesla_gateway_meter_data.csv"
 SLEEP=180  # 3 * 60
 
 while true;
 do
-   IP="$(arp-scan -l |grep $MAC |cut -f1)"
-   # IP="192.168.1.5"  # Speeds up testing, once you know it.
+   # Uncomment the following if IP is not static
+   # (needs `sudo`)
+   # IP="$(arp-scan -l |grep $MAC |cut -f1)"
 
    CMD1="curl -sk https://$IP/api/meters/aggregates"
    CMD2="curl -sk https://$IP/api/system_status/soe"
