@@ -1,0 +1,28 @@
+# Found these at:
+# https://hakin9.org/tesla-powerwall-2-security-shenanigans/
+GET:
+/api/status              # Shows start_tie, up_time, version, git_hash
+/api/system_status/grid_faults
+/api/system_status/soe   # Shows percentage
+/api/config
+/api/config/completed
+/api/customer
+/api/sitemaster/stop     # Stops the PW
+/api/sitemaster/run      # Starts the PW
+/api/customer/registration
+/api/installer
+/api/meters
+/api/meters/aggregates  # Info about CTS and loads)
+/api/meters/readings
+/api/networks
+/api/networks/wifi_security_types
+/api/operation
+/api/powerwall
+/api/powerwalls/status 
+/api/site_info
+/api/sitemaster         # Shows running, uptime, connected_to_tesla...
+/api/solar
+/api/status
+/api/system_status/grid_faults
+/api/system/testing
+/api/system/update/status
