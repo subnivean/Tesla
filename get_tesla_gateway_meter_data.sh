@@ -6,7 +6,7 @@
 IP="$(grep 'IP=' secrets |cut -d'=' -f2)"
 
 OUTFILE="output/tesla_gateway_meter_data.csv"
-SLEEP=180  # 3 * 60
+SLEEP=60  # seconds
 
 while true;
 do
