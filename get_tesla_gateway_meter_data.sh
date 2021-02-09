@@ -28,6 +28,6 @@ do
      .[1].percentage, \
      .[2].grid_status \
     ]
-    | @csv" >> $OUTFILE
+    | @csv" |./format.py >> $OUTFILE
     sleep $SLEEP
 done
