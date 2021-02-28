@@ -54,5 +54,9 @@ do
       .[2].grid_status \
      ]
      | @csv" |./format.py >> $OUTFILE
+
+    # Add last record to database
+    echo "$(tail -n1 output/tesla_gateway_meter_data.csv)" | ./add_api_rec_to_database.py
+
     sleep $SLEEP
 done
