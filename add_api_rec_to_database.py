@@ -18,6 +18,8 @@ apirec = sys.stdin.read()
 
 COLUMNS = "DateTime,Grid_kW,Home_kW,Solar_kW,Powerwall_kW,BattLevel,GridStatus".split(',')
 ORWELLSHARE = 0.26  # Our share of Orwell panel output
+ORWELLSOLARMAX = 14.22 * ORWELLSHARE  # Maximum observed output
+HOMESOLARMAX = 5.3  # Maximum observed output
 
 fields = [f.strip().strip('"') for f in apirec.split(",")]
 fields[1:-1] = map(float, fields[1:-1])
@@ -62,5 +64,7 @@ df['Orwell_kWh'] = df['Orwell_kW'] * df['delta_hours']
 # Add to the database
 df.to_sql('energy_data', con, if_exists='append')
 
+homepctofmax = df['Solar_kW'][0] / HOMESOLARMAX * 100
+orwellpctofmax = orwellout / ORWELLSOLARMAX * 100
 print(f"orwellout: {orwellout * 1000:.2f} "
-        f"({orwellout / df['Solar_kW'][0] * 100:.1f}%)")
+        f"({orwellpctofmax / homepctofmax * 100:.1f}%)")
