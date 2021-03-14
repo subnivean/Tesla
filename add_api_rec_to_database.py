@@ -62,4 +62,5 @@ df['Orwell_kWh'] = df['Orwell_kW'] * df['delta_hours']
 # Add to the database
 df.to_sql('energy_data', con, if_exists='append')
 
-print(f"orwellout: {orwellout:.2f}")
+print(f"orwellout: {orwellout * 1000:.2f} "
+        f"({orwellout / df['Solar_kW'][0] * 100:.1f}%)")
