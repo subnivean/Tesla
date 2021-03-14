@@ -17,6 +17,7 @@ import pandas as pd
 apirec = sys.stdin.read()
 
 COLUMNS = "DateTime,Grid_kW,Home_kW,Solar_kW,Powerwall_kW,BattLevel,GridStatus".split(',')
+ORWELLSHARE = 0.26  # Our share of Orwell panel output
 
 fields = [f.strip().strip('"') for f in apirec.split(",")]
 fields[1:-1] = map(float, fields[1:-1])
@@ -33,6 +34,17 @@ cursor = con.cursor()
 cursor.execute("SELECT DateTime FROM energy_data ORDER BY DateTime DESC LIMIT 1")
 lastdate = pd.to_datetime(cursor.fetchone()[0], utc=True).tz_convert('US/Eastern')
 
+# Get the last reading from the Orwell panels - this acquired via:
+#   ~/Sunpower/sunpower_hass/venv/bin/python -msunpower -c ~/Sunpower/sunpower_hass/sunpower.cfg
+# which is run every minute via cron.
+orwellout = Path("/tmp/sunpower").read_text()
+try:
+    orwellout = float(orwellout) * ORWELLSHARE
+except (ValueError, TypeError) as e:
+    orwellout = 0.0
+
+df['Orwell_kW'] = orwellout
+
 ts = datetime.datetime.fromisoformat(df.index[0])
 ts.replace(tzinfo=pytz.timezone('US/Eastern'))
 
@@ -45,6 +57,9 @@ df['Home_kWh'] = df['Home_kW'] * df['delta_hours']
 df['Solar_kWh'] = df['Solar_kW'] * df['delta_hours']
 df['Powerwall_kWh'] = df['Powerwall_kW'] * df['delta_hours']
 df['Grid_kWh'] = df['Grid_kW'] * df['delta_hours']
+df['Orwell_kWh'] = df['Orwell_kW'] * df['delta_hours']
 
 # Add to the database
 df.to_sql('energy_data', con, if_exists='append')
+
+print(f"orwellout: {orwellout:.2f}")
