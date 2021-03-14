@@ -3,3 +3,4 @@
 secrets*
 !secrets_example
 energy.sqlite
+.vscode/
