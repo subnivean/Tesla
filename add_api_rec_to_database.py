@@ -11,7 +11,8 @@ import sys
 
 import pandas as pd
 
-# Data record is being piped in from a bash script
+# Data record is being piped in from bash
+# script `get_tesla_gateway_meter_data.sh`
 # apirec = "2021-02-28T09:56:11-05:00",  -642.81,  1027.89,  1668.86,    10.00,    99.04, "SystemGridConnected"
 #apirec = " ".join(sys.argv[1:])
 apirec = sys.stdin.read()
