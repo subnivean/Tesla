@@ -40,10 +40,10 @@ lastdate = pd.to_datetime(cursor.fetchone()[0], utc=True).tz_convert('US/Eastern
 # Get the last reading from the Orwell panels - this acquired via:
 #   ~/Sunpower/sunpower_hass/venv/bin/python -msunpower -c ~/Sunpower/sunpower_hass/sunpower.cfg
 # which is run every minute via cron.
-orwellout = Path("/tmp/sunpower").read_text()
 try:
+    orwellout = Path("/tmp/sunpower").read_text()
     orwellout = float(orwellout) * ORWELLSHARE
-except (ValueError, TypeError) as e:
+except (FileNotFoundError, ValueError, TypeError) as e:
     orwellout = 0.0
 
 df['Orwell_kW'] = orwellout
@@ -65,7 +65,7 @@ df['Orwell_kWh'] = df['Orwell_kW'] * df['delta_hours']
 # Add to the database
 df.to_sql('energy_data', con, if_exists='append')
 
-homepctofmax = df['Solar_kW'][0] / HOMESOLARMAX * 100
-orwellpctofmax = orwellout / ORWELLSOLARMAX * 100
-print(f"orwellout: {orwellout * 1000:.2f} "
-        f"({orwellpctofmax / homepctofmax * 100:.1f}%)")
+# homepctofmax = df['Solar_kW'][0] / HOMESOLARMAX * 100
+# orwellpctofmax = orwellout / ORWELLSOLARMAX * 100
+# print(f"orwellout: {orwellout * 1000:.2f} "
+        # f"({orwellpctofmax / homepctofmax * 100:.1f}%)")
