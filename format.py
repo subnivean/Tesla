@@ -11,7 +11,7 @@ fs = out.strip().split(",")
 fs[0] = re.sub(r"\.\d+-", "-", fs[0])
 
 # Format floats
-fs[1:6] = [f"{float(n):8.2f}" for n in fs[1:6]]
+fs[1:7] = [f"{float(n):8.2f}" for n in fs[1:7]]
 
 # Print modified record
 print(", ".join(fs))

@@ -42,8 +42,9 @@ do
     CMD1="curl -sk -b $TESLA/cookie.txt https://$IP/api/meters/aggregates"
     CMD2="curl -sk -b $TESLA/cookie.txt https://$IP/api/system_status/soe"
     CMD3="curl -sk -b $TESLA/cookie.txt https://$IP/api/system_status/grid_status"
+    CMD4="curl -sk -b $TESLA/cookie.txt https://$IP/api/system_status"
 
-    (echo "[" && $CMD1 && echo "," && $CMD2 && echo "," && $CMD3 && echo "]") | jq -r " \
+    (echo "[" && $CMD1 && echo "," && $CMD2 && echo "," && $CMD3 && echo "," && $CMD4 && echo "]") | jq -r " \
      [ \
       .[0].load.last_communication_time, \
       .[0].site.instant_power, \
@@ -51,6 +52,7 @@ do
       .[0].solar.instant_power, \
       .[0].battery.instant_power, \
       .[1].percentage, \
+      .[3].nominal_full_pack_energy, \
       .[2].grid_status \
      ]
      | @csv" |./format.py >> $OUTFILE
