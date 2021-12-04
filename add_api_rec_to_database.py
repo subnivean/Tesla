@@ -17,7 +17,7 @@ import pandas as pd
 #apirec = " ".join(sys.argv[1:])
 apirec = sys.stdin.read()
 
-COLUMNS = "DateTime,Grid_kW,Home_kW,Solar_kW,Powerwall_kW,BattLevel,GridStatus".split(',')
+COLUMNS = "DateTime,Grid_kW,Home_kW,Solar_kW,Powerwall_kW,BattLevel,BattCapacitykWh,GridStatus".split(',')
 ORWELLSHARE = 0.26  # Our share of Orwell panel output
 ORWELLSOLARMAX = 14.22 * ORWELLSHARE  # Maximum observed output
 HOMESOLARMAX = 5.3  # Maximum observed output
@@ -26,7 +26,7 @@ fields = [f.strip().strip('"') for f in apirec.split(",")]
 fields[1:-1] = map(float, fields[1:-1])
 df = pd.DataFrame([fields], columns=COLUMNS)
 # Convert numbers to kilowatts
-df[['Grid_kW', 'Home_kW', 'Solar_kW', 'Powerwall_kW']] /= 1000
+df[['Grid_kW', 'Home_kW', 'Solar_kW', 'Powerwall_kW', 'BattCapacitykWh']] /= 1000
 
 df['DateTime'].map(datetime.datetime.fromisoformat)
 df = df.set_index(['DateTime'])
