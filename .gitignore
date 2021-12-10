@@ -2,5 +2,8 @@
 *.bak
 secrets*
 !secrets_example
-energy.sqlite
+*.sqlite*
 .vscode/
+testing.ipynb
+creds.json
+cookie.txt

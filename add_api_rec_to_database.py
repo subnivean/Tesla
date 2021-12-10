@@ -3,9 +3,7 @@
 the Tesla API to the sqlite database. Piped to
 from inside `get_tesla_gateway_meter_data.sh`.
 """
-import datetime
 from pathlib import Path
-import pytz
 import sqlite3
 import sys
 
@@ -13,7 +11,7 @@ import pandas as pd
 
 # Data record is being piped in from bash
 # script `get_tesla_gateway_meter_data.sh`
-# apirec = "2021-02-28T09:56:11-05:00",  -642.81,  1027.89,  1668.86,    10.00,    99.04, "SystemGridConnected"
+# apirec = '"2021-12-08T21:20:33-04:00",  9999.26,  1256.49,     4.19,   -10.00,   100.00, 11193.00, "SystemGridConnected"'
 #apirec = " ".join(sys.argv[1:])
 apirec = sys.stdin.read()
 
@@ -28,14 +26,14 @@ df = pd.DataFrame([fields], columns=COLUMNS)
 # Convert numbers to kilowatts
 df[['Grid_kW', 'Home_kW', 'Solar_kW', 'Powerwall_kW', 'BattCapacitykWh']] /= 1000
 
-df['DateTime'].map(datetime.datetime.fromisoformat)
+df['DateTime'] = pd.to_datetime(df['DateTime'], utc=True)
 df = df.set_index(['DateTime'])
 
 # Open the database and read the last timestamp.
 con = sqlite3.connect("energy.sqlite")
 cursor = con.cursor()
 cursor.execute("SELECT DateTime FROM energy_data ORDER BY DateTime DESC LIMIT 1")
-lastdate = pd.to_datetime(cursor.fetchone()[0], utc=True).tz_convert('US/Eastern')
+lastdate = pd.to_datetime(cursor.fetchone()[0], utc=True)
 
 # Get the last reading from the Orwell panels - this acquired via:
 #   ~/Sunpower/sunpower_hass/venv/bin/python -msunpower -c ~/Sunpower/sunpower_hass/sunpower.cfg
@@ -48,11 +46,8 @@ except (FileNotFoundError, ValueError, TypeError) as e:
 
 df['Orwell_kW'] = orwellout
 
-ts = datetime.datetime.fromisoformat(df.index[0])
-ts.replace(tzinfo=pytz.timezone('US/Eastern'))
-
 # Get time delta
-td = ts - lastdate.to_pydatetime()
+td = df.index[0] - lastdate.to_pydatetime()
 
 # Add calculated fields
 df['delta_hours'] = td.total_seconds() / 3600
