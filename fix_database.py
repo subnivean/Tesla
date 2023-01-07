@@ -41,5 +41,6 @@ cur = conn2.cursor()
 cur.execute("DELETE FROM energy_data")
 conn2.commit()
 findf.to_sql('energy_data', conn2, if_exists='append')
+
 conn2.close()
 
