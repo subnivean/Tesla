@@ -21,3 +21,4 @@ The format of the `creds.json` file for authenticating to the Tesla gateway is:
 ```
 
 Note that `"username"` above is literally `"customer"` (as opposed to `"installer"`)
+
